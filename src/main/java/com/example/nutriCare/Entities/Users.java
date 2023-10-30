@@ -23,7 +23,6 @@ public class Users {
     private Integer varsta;
     private Integer greutate;
 
-
     @OneToMany(mappedBy = "user")
     private List<UserProductScore> userProductScores;
 
