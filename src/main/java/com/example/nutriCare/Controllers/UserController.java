@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@Controller
+    @Controller
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UsersService userService;
 
-    @Autowired
+     @Autowired
     public UserController(UsersService userService) {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
+     @GetMapping("/{id}")
     public ResponseEntity<Users> getUserById(@PathVariable Long id) {
         Users user = userService.getUserById(id);
         if (user != null) {
@@ -31,7 +31,7 @@ public class UserController {
         }
     }
 
-    @PostMapping("/create")
+     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Users> createUser(@RequestBody Users user) {
         Users newUser = userService.createUser(user);
