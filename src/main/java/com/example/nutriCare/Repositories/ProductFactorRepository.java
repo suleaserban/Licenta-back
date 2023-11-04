@@ -1,10 +1,10 @@
 package com.example.nutriCare.Repositories;
 
-import com.example.nutriCare.Entities.Product;
+import com.example.nutriCare.Entities.ProductFactor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductFactorRepository extends JpaRepository<ProductFactor, Long> {
 
 }

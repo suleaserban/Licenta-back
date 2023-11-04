@@ -5,25 +5,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-
-public class Users {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userid;
+    private Long id;
     private String email;
-    private String password;
-    private String role;
+    private String parola;
+    private String rol;
+    private String nume;
     private Integer varsta;
-    private Integer greutate;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserProductScore> userProductScores;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UserScore> userScores;
 
 }

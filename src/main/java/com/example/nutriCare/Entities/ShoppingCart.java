@@ -4,26 +4,25 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "shopping_cart")
 public class ShoppingCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "userid")
-    private Users user;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "productid")
-    private Product product;
+    @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<CartItem> cartItems;
 
-    private int quantity;
-
-
+    // Constructor, Getters and Setters
 }

@@ -1,12 +1,12 @@
 package com.example.nutriCare.Repositories;
 
 import com.example.nutriCare.Entities.ShoppingCart;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
-@EntityScan
 @Repository
-public interface ShoppingCartItemRepository extends JpaRepository<ShoppingCart,Long> {
+public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long> {
+    List<ShoppingCart> findByUserId(Long userId);
 
 }

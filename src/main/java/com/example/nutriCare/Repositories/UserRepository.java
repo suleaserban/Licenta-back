@@ -1,12 +1,12 @@
 package com.example.nutriCare.Repositories;
 
-
-import com.example.nutriCare.Entities.Users;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
+import com.example.nutriCare.Entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import java.util.Optional;
 
-@EntityScan
 @Repository
-public interface UserRepository extends JpaRepository<Users,Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+
 }
