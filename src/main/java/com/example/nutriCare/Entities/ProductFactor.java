@@ -1,14 +1,12 @@
 package com.example.nutriCare.Entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Entity
 @Table(name = "product_factors")
 public class ProductFactor {
@@ -20,8 +18,18 @@ public class ProductFactor {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private String numeFactor; // Numele factorului, de exemplu "sunExposure"
-    private Double valoare; // Valoarea asociată factorului pentru acest produs
+    private String numeFactor;
+    private Double valoare;
+
+
+    public ProductFactor(String numeFactor, Double valoare) {
+        this.numeFactor = numeFactor;
+        this.valoare = valoare;
+    }
+
+
+
+
 
 
 }

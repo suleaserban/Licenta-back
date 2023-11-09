@@ -35,13 +35,13 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public void addFactorsToProduct(Long productId, List<ProductFactor> factors) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id " + productId));
+    public void addFactorsToProduct(String numeProdus, List<ProductFactor> factors) {
+        Product product = productRepository.findByNume(numeProdus)
+                .orElseThrow(() -> new ResourceNotFoundException("Nu am gasit produs cu numele" + numeProdus));
 
         factors.forEach(factor -> {
-            factor.setProduct(product); // Set the product for each factor
-            productFactorRepository.save(factor); // Save each factor
+            factor.setProduct(product);
+            productFactorRepository.save(factor);
         });
     }
 

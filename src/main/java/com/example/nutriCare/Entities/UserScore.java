@@ -1,12 +1,10 @@
 package com.example.nutriCare.Entities;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "user_scores")
@@ -24,9 +22,11 @@ public class UserScore {
     @JoinColumn(name = "product_id")
     private Product product;
 
-    private String numeFactor;
     private Double valoare;
 
-
-
+    public UserScore(User user, Product product, double valoare) {
+        this.user = user;
+        this.product = product;
+        this.valoare = valoare;
+    }
 }
