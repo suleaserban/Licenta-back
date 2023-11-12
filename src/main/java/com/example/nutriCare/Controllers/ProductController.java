@@ -59,9 +59,6 @@ public class ProductController {
     @PutMapping("/{id}")
     public Product updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         Product product = productService.getProductById(id);
-        // Actualizează proprietățile produsului cu cele din productDetails
-        // De exemplu: product.setName(productDetails.getName());
-        // ...
         return productService.createOrUpdateProduct(product);
     }
 
