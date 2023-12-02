@@ -34,6 +34,8 @@ public class AuthenticationService {
     public AuthenticationResponse register(RegisterRequest request) {
         User user = new User();
         user.setEmail(request.getEmail());
+        user.setNume(request.getNume());
+        user.setPrenume(request.getPrenume());
         user.setVarsta(request.getVarsta());
         user.setParola(passwordEncoder.encode(request.getParola()));
         user.setRol(Role.USER);
@@ -43,6 +45,24 @@ public class AuthenticationService {
         productFactorService.initializeUserScores(user);
 
         var jwtToken = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .token(jwtToken)
+                .build();
+    }
+
+    public AuthenticationResponse registerDoctor(RegisterRequest request) {
+
+
+        User doctor = new User();
+        doctor.setEmail(request.getEmail());
+        doctor.setParola(passwordEncoder.encode(request.getParola()));
+        doctor.setRol(Role.DOCTOR);
+
+
+        userRepository.save(doctor);
+
+        var jwtToken = jwtService.generateToken(doctor);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)

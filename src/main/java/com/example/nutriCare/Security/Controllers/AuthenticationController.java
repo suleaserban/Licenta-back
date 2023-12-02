@@ -7,13 +7,12 @@ import com.example.nutriCare.Security.RegisterRequest;
 import com.example.nutriCare.Security.Services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:4200")
 @RequiredArgsConstructor
 public class AuthenticationController {
         private final AuthenticationService authenticationService;
@@ -28,5 +27,11 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/registerDoctor")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<AuthenticationResponse> registerDoctor(@RequestBody RegisterRequest request) {
+        return ResponseEntity.ok(authenticationService.registerDoctor(request));
     }
 }
