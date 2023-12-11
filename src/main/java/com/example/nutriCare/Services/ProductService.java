@@ -30,7 +30,7 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
     }
-
+//dummycommit
     public Product createOrUpdateProduct(Product product) {
         return productRepository.save(product);
     }
