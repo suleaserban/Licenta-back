@@ -1,10 +1,12 @@
 package com.example.nutriCare.Security;
 
+import com.example.nutriCare.Services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    @Autowired
+    UserService userService;
     private static final String SECRET_KEY = "RULh5fYZGB6QinnJSXTN1GQ0tfridBwyZI59L+oSlWKN/MPeh9ejb1sD3WbjT3GR";
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -32,6 +36,7 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ) {
+        extraClaims.put("id",userService.getUserIdByEmail(userDetails.getUsername()));
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

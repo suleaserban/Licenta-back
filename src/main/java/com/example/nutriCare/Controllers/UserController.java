@@ -8,6 +8,8 @@ import com.example.nutriCare.Entities.UserScore;
 import com.example.nutriCare.Services.ProductFactorService;
 import com.example.nutriCare.Services.ScoringService;
 import com.example.nutriCare.Services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @RestController
+@CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/users")
 public class UserController {
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
     private final ScoringService scoringService;
@@ -39,12 +42,15 @@ public class UserController {
         return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
     }
 
-    @PostMapping("/{userId}/calculate-scores")
+    @PostMapping("/{id}/calculate-scores")
     public ResponseEntity<?> calculateScores(
-            @PathVariable Long userId,
+            @PathVariable Long id,
             @RequestBody PonderiDto ponderiDto
     ) {
-        scoringService.calculateScoresForUser(userId, ponderiDto);
+        logger.info("Calculating scores for id: {}", id);
+        logger.info("Ponderi dto: {}", ponderiDto);
+        scoringService.calculateScoresForUser(id, ponderiDto);
+        logger.info("Scores calculated successfully for userId: {}", id);
         return ResponseEntity.ok().build();
     }
 
