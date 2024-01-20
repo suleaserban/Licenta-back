@@ -1,5 +1,6 @@
 package com.example.nutriCare.Services;
 
+import com.example.nutriCare.Dtos.ProductDTO;
 import com.example.nutriCare.Entities.Product;
 import com.example.nutriCare.Entities.ProductFactor;
 import com.example.nutriCare.Exceptions.ResourceNotFoundException;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -22,18 +24,12 @@ public class ProductService {
         this.productFactorRepository = productFactorRepository;
     }
 
-    public List<Product> listAllProducts() {
-        return productRepository.findAll();
+
+    public List<ProductDTO> getProductsByIds(List<Long> ids) {
+        List<Product> products = productRepository.findAllById(ids);
+        return products.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found"));
-    }
-//dummycommit
-    public Product createOrUpdateProduct(Product product) {
-        return productRepository.save(product);
-    }
 
     public void addFactorsToProduct(String numeProdus, List<ProductFactor> factors) {
         Product product = productRepository.findByNume(numeProdus)
@@ -47,6 +43,25 @@ public class ProductService {
 
     public void deleteProduct(Long id) {
         productRepository.deleteById(id);
+    }
+
+    private ProductDTO convertToDto(Product product) {
+        if (product == null) {
+            return null;
+        }
+
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setNume(product.getNume());
+        dto.setDescriere(product.getDescriere());
+        dto.setBeneficii(product.getBeneficii());
+        dto.setIngrediente(product.getIngrediente());
+        dto.setMod_administrare(product.getMod_administrare());
+        dto.setContra_indicatii(product.getContra_indicatii());
+        dto.setProducator(product.getProducator());
+
+
+        return dto;
     }
 
 }

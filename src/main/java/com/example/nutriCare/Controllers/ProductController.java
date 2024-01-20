@@ -1,5 +1,6 @@
 package com.example.nutriCare.Controllers;
 
+import com.example.nutriCare.Dtos.ProductDTO;
 import com.example.nutriCare.Dtos.ProductFactorDTO;
 import com.example.nutriCare.Entities.Product;
 import com.example.nutriCare.Entities.ProductFactor;
@@ -25,21 +26,13 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.listAllProducts();
+
+    @GetMapping("/get-recommended-products")
+    public ResponseEntity<List<ProductDTO>> getRecommendedProducts(@RequestParam List<Long> ids) {
+        List<ProductDTO> products = productService.getProductsByIds(ids);
+        return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-        return ResponseEntity.ok(product);
-    }
-
-    @PostMapping
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createOrUpdateProduct(product);
-    }
 
     @PostMapping("/{numeProdus}/factors")
     public ResponseEntity<?> addFactorsToProduct(@PathVariable String numeProdus, @RequestBody List<ProductFactorDTO> factorDtos) {
@@ -56,11 +49,6 @@ public class ProductController {
         }
     }
 
-    @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
-        Product product = productService.getProductById(id);
-        return productService.createOrUpdateProduct(product);
-    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
