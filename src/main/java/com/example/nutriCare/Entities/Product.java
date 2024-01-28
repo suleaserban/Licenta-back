@@ -24,6 +24,7 @@ public class Product {
     private String mod_administrare;
     private String contra_indicatii;
     private String producator;
+    private Integer pret;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ProductFactor> productFactors;

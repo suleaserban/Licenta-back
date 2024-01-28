@@ -33,6 +33,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/get-all-products")
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        List<ProductDTO> products = productService.getAllProducts();
+        return ResponseEntity.ok(products);
+    }
+
 
     @PostMapping("/{numeProdus}/factors")
     public ResponseEntity<?> addFactorsToProduct(@PathVariable String numeProdus, @RequestBody List<ProductFactorDTO> factorDtos) {

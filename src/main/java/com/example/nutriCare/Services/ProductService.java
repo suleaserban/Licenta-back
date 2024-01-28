@@ -30,6 +30,13 @@ public class ProductService {
         return products.stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
+    public List<ProductDTO> getAllProducts() {
+        List<Product> productList = productRepository.findAll();
+        return productList.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 
     public void addFactorsToProduct(String numeProdus, List<ProductFactor> factors) {
         Product product = productRepository.findByNume(numeProdus)
