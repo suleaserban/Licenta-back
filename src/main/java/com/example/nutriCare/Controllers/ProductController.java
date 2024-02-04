@@ -33,6 +33,12 @@ public class ProductController {
         return ResponseEntity.ok(products);
     }
 
+    @GetMapping("/get-products-by-factors")
+    public ResponseEntity<List<ProductDTO>> getProductsByFactor(@RequestParam List<String> productFactors) {
+        List<ProductDTO> products = productService.getProductsByFactors(productFactors);
+        return ResponseEntity.ok(products);
+    }
+
     @GetMapping("/get-all-products")
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> products = productService.getAllProducts();

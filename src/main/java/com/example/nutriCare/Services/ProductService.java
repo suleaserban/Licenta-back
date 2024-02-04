@@ -37,6 +37,19 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductDTO> getProductsByFactors(List<String> productFactors) {
+
+        long factorCount = productFactors.size();
+
+
+        List<Product> productsWithAllFactors = productFactorRepository.findProductsByAllFactors(productFactors, factorCount);
+
+
+        return productsWithAllFactors.stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
 
     public void addFactorsToProduct(String numeProdus, List<ProductFactor> factors) {
         Product product = productRepository.findByNume(numeProdus)
