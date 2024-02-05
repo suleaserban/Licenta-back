@@ -1,0 +1,16 @@
+package com.example.nutriCare.Dtos;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+public class ShoppingCartDTO {
+    private Long userId;
+    private List<CartItemDTO> items;
+    private Double total;
+}

@@ -1,10 +1,8 @@
 package com.example.nutriCare.Controllers;
 
-import com.example.nutriCare.Dtos.PonderiDto;
+import com.example.nutriCare.Dtos.PonderiDTO;
 import com.example.nutriCare.Dtos.UserDTO;
-import com.example.nutriCare.Dtos.UserScoreDTO;
 import com.example.nutriCare.Entities.User;
-import com.example.nutriCare.Entities.UserScore;
 import com.example.nutriCare.Services.ProductFactorService;
 import com.example.nutriCare.Services.ScoringService;
 import com.example.nutriCare.Services.UserService;
@@ -15,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @RequestMapping("/api/users")
@@ -45,7 +41,7 @@ public class UserController {
     @PostMapping("/{id}/calculate-scores")
     public ResponseEntity<?> calculateScores(
             @PathVariable Long id,
-            @RequestBody PonderiDto ponderiDto
+            @RequestBody PonderiDTO ponderiDto
     ) {
         logger.info("Calculating scores for id: {}", id);
         logger.info("Ponderi dto: {}", ponderiDto);

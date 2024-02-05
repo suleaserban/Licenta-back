@@ -5,6 +5,6 @@ import lombok.Data;
 import java.util.Map;
 
 @Data
-public class PonderiDto {
+public class PonderiDTO {
     private Map<String, Double> ponderi;
 }

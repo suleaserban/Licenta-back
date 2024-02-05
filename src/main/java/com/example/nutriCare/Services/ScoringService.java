@@ -1,6 +1,6 @@
 package com.example.nutriCare.Services;
 
-import com.example.nutriCare.Dtos.PonderiDto;
+import com.example.nutriCare.Dtos.PonderiDTO;
 import com.example.nutriCare.Entities.Product;
 import com.example.nutriCare.Entities.ProductFactor;
 import com.example.nutriCare.Entities.User;
@@ -9,7 +9,6 @@ import com.example.nutriCare.Repositories.ProductRepository;
 import com.example.nutriCare.Repositories.UserRepository;
 import com.example.nutriCare.Repositories.UserScoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class ScoringService {
     @Autowired
     private UserScoreRepository userScoreRepository;
 
-    public void calculateScoresForUser(Long userId, PonderiDto ponderiDto) {
+    public void calculateScoresForUser(Long userId, PonderiDTO ponderiDto) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Product> products = productRepository.findAll();
