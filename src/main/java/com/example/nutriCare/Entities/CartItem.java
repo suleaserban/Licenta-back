@@ -26,5 +26,5 @@ public class CartItem {
 
     private int quantity;
 
-    // Constructor, Getters and Setters
+
 }
