@@ -83,10 +83,43 @@ public class ShoppingCartService {
         return dto;
     }
 
+    @Transactional
+    public void removeProductFromCart(Long userId, Long productId) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
+
+        CartItem cartItem = shoppingCart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+
+        shoppingCart.getCartItems().remove(cartItem);
+        shoppingCartRepository.save(shoppingCart);
+    }
+
+    @Transactional
+    public void changeProductQuantity(Long userId, Long productId, int change) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
+
+        CartItem cartItem = shoppingCart.getCartItems().stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Product not found in cart"));
+
+        int newQuantity = cartItem.getQuantity() + change;
+        if (newQuantity <= 0) {
+            shoppingCart.getCartItems().remove(cartItem);
+        } else {
+            cartItem.setQuantity(newQuantity);
+        }
+
+        shoppingCartRepository.save(shoppingCart);
+    }
+
     private CartItemDTO mapToDto(CartItem cartItem) {
         CartItemDTO dto = new CartItemDTO();
         Product product = cartItem.getProduct();
-
         dto.setProductId(product.getId());
         dto.setProductName(product.getNume());
         dto.setQuantity(cartItem.getQuantity());
