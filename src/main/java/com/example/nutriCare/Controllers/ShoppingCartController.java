@@ -27,14 +27,16 @@ public class ShoppingCartController {
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<String> removeProductFromCart(@RequestParam Long userId, @RequestParam Long productId) {
+    public ResponseEntity<ShoppingCartDTO> removeProductFromCart(@RequestParam Long userId, @RequestParam Long productId) {
         shoppingCartService.removeProductFromCart(userId, productId);
-        return ResponseEntity.ok("Product removed from cart successfully");
+        ShoppingCartDTO updatedCart = shoppingCartService.getCartByUserId(userId);
+        return ResponseEntity.ok(updatedCart);
     }
 
     @PostMapping("/changeQuantity")
-    public ResponseEntity<String> changeProductQuantity(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int change) {
+    public ResponseEntity<ShoppingCartDTO> changeProductQuantity(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int change) {
         shoppingCartService.changeProductQuantity(userId, productId, change);
-        return ResponseEntity.ok("Product quantity updated successfully");
+        ShoppingCartDTO updatedCart = shoppingCartService.getCartByUserId(userId);
+        return ResponseEntity.ok(updatedCart);
     }
 }
