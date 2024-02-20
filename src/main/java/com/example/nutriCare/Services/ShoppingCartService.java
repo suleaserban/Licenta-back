@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,7 @@ public class ShoppingCartService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
                 .orElse(new ShoppingCart());
 
         if (shoppingCart.getId() == null) {
@@ -62,7 +63,7 @@ public class ShoppingCartService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
                 .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
 
         return mapToDto(shoppingCart);
@@ -71,8 +72,9 @@ public class ShoppingCartService {
     private ShoppingCartDTO mapToDto(ShoppingCart shoppingCart) {
         ShoppingCartDTO dto = new ShoppingCartDTO();
         List<CartItemDTO> cartItemDtos = shoppingCart.getCartItems().stream()
+                .sorted(Comparator.comparing(item -> item.getProduct().getId()))
                 .map(this::mapToDto)
-                .toList();
+                .collect(Collectors.toList());
 
         dto.setUserId(shoppingCart.getUser().getId());
         dto.setItems(cartItemDtos);
@@ -85,7 +87,7 @@ public class ShoppingCartService {
 
     @Transactional
     public void removeProductFromCart(Long userId, Long productId) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
                 .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
 
         CartItem cartItem = shoppingCart.getCartItems().stream()
@@ -99,7 +101,7 @@ public class ShoppingCartService {
 
     @Transactional
     public void changeProductQuantity(Long userId, Long productId, int change) {
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
                 .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
 
         CartItem cartItem = shoppingCart.getCartItems().stream()
