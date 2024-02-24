@@ -1,6 +1,7 @@
 package com.example.nutriCare.Controllers;
 
 import com.example.nutriCare.Dtos.PonderiDTO;
+import com.example.nutriCare.Dtos.ScoreCalculationRequest;
 import com.example.nutriCare.Dtos.UserDTO;
 import com.example.nutriCare.Entities.User;
 import com.example.nutriCare.Services.ProductFactorService;
@@ -41,11 +42,11 @@ public class UserController {
     @PostMapping("/{id}/calculate-scores")
     public ResponseEntity<?> calculateScores(
             @PathVariable Long id,
-            @RequestBody PonderiDTO ponderiDto
+            @RequestBody ScoreCalculationRequest request
     ) {
         logger.info("Calculating scores for id: {}", id);
-        logger.info("Ponderi dto: {}", ponderiDto);
-        scoringService.calculateScoresForUser(id, ponderiDto);
+        logger.info("Ponderi dto: {}", request.getPonderiDto());
+        scoringService.calculateScoresForUser(id, request.getPonderiDto(),request.getIsVegan());
         logger.info("Scores calculated successfully for userId: {}", id);
         return ResponseEntity.ok().build();
     }

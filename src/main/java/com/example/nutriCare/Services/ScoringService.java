@@ -24,7 +24,7 @@ public class ScoringService {
     @Autowired
     private UserScoreRepository userScoreRepository;
 
-    public void calculateScoresForUser(Long userId, PonderiDTO ponderiDto) {
+    public void calculateScoresForUser(Long userId, PonderiDTO ponderiDto, Boolean isVegan) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Product> products = productRepository.findAll();
@@ -41,14 +41,34 @@ public class ScoringService {
                 }
             }
 
+
             UserScore userScore = userScoreRepository
                     .findByUserIdAndProductId(userId, product.getId())
                     .orElse(new UserScore(user, product, 0.0));
-
             userScore.setValoare(score);
             userScoreRepository.save(userScore);
         }
+
+        if (isVegan) {
+            swapScores(userId, 10L, 21L);
+            swapScores(userId, 13L, 20L);
+        }
     }
 
+    private void swapScores(Long userId, Long normalProductId, Long veganProductId) {
+        UserScore normalScore = userScoreRepository.findByUserIdAndProductId(userId, normalProductId)
+                .orElse(null);
+        UserScore veganScore = userScoreRepository.findByUserIdAndProductId(userId, veganProductId)
+                .orElse(null);
 
+        if (normalScore != null && veganScore != null) {
+            double tempScore = normalScore.getValoare();
+            normalScore.setValoare(veganScore.getValoare());
+            veganScore.setValoare(tempScore);
+
+            userScoreRepository.save(normalScore);
+            userScoreRepository.save(veganScore);
+        }
+
+    }
 }

@@ -24,7 +24,7 @@ public class UserScoreService {
     public List<UserScoreDTO> findTopScoresByUserId(Long userId) {
         PageRequest pageRequest = PageRequest.of(0, 4);
 
-        Page<UserScore> topScores = userScoreRepository.findByUserIdOrderByValoareDesc(userId, pageRequest);
+        Page<UserScore> topScores = userScoreRepository.findByUserIdAndValoareGreaterThanOrderByValoareDesc(userId, 0.0, pageRequest);
 
         return topScores.stream()
                 .map(score -> new UserScoreDTO(score.getId(),

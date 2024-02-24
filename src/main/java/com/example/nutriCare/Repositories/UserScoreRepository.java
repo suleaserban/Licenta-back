@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface UserScoreRepository extends JpaRepository<UserScore, Long> {
     Optional<UserScore> findByUserIdAndProductId(Long userId, Long productId);
 
-    Page<UserScore> findByUserIdOrderByValoareDesc(Long userId, Pageable pageable);
+    Page<UserScore> findByUserIdAndValoareGreaterThanOrderByValoareDesc(Long userId, Double valoare, Pageable pageable);
 }
