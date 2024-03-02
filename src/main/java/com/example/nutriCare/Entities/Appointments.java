@@ -27,4 +27,5 @@ public class Appointments {
     private String status;
 
     private String sumar;
+
 }

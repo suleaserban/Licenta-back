@@ -57,6 +57,9 @@ public class AuthenticationService {
         User doctor = new User();
         doctor.setEmail(request.getEmail());
         doctor.setParola(passwordEncoder.encode(request.getParola()));
+        doctor.setPrenume(request.getPrenume());
+        doctor.setNume(request.getNume());
+        doctor.setVarsta(request.getVarsta());
         doctor.setRol(Role.DOCTOR);
 
 
@@ -89,7 +92,7 @@ public class AuthenticationService {
                     .build();
         } catch (Exception e) {
             logger.error("Eroare la autentificare pentru utilizatorul: {}", request.getEmail(), e);
-            throw e; // sau gestionați excepția după cum este necesar
+            throw e;
         }
     }
 }

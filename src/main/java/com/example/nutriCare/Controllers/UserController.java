@@ -1,5 +1,6 @@
 package com.example.nutriCare.Controllers;
 
+import com.example.nutriCare.Dtos.DoctorDetailsDTO;
 import com.example.nutriCare.Dtos.PonderiDTO;
 import com.example.nutriCare.Dtos.ScoreCalculationRequest;
 import com.example.nutriCare.Dtos.UserDTO;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -51,6 +54,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-
+    @GetMapping("/get-all-doctors")
+    public List<DoctorDetailsDTO> getAllDoctors() {
+        return userService.findAllDoctors();
+    }
 
 }
