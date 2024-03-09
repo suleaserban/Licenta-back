@@ -3,11 +3,17 @@ package com.example.nutriCare.Services;
 import com.example.nutriCare.Dtos.AppointmentsDTO;
 import com.example.nutriCare.Entities.Appointments;
 import com.example.nutriCare.Entities.User;
+import com.example.nutriCare.Mappers.DoctorLinkMapper;
 import com.example.nutriCare.Repositories.AppointmentRepository;
 import com.example.nutriCare.Repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -19,10 +25,13 @@ public class AppointmentService {
 
     private final UserRepository userRepository;
 
+    private DoctorLinkMapper doctorLinkMapper;
+
     @Autowired
-    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository) {
+    public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository,DoctorLinkMapper doctorLinkMapper) {
         this.appointmentRepository = appointmentRepository;
         this.userRepository = userRepository;
+        this.doctorLinkMapper = doctorLinkMapper;
     }
 
     public List<AppointmentsDTO> getAppointmentsByUser(Long userId) {
@@ -37,9 +46,10 @@ public class AppointmentService {
         dto.setUserNume(appointment.getUser().getNume());
         dto.setDoctorId(appointment.getDoctor().getId());
         dto.setDoctorNume(appointment.getDoctor().getNume());
-        dto.setDataProgramare(appointment.getDataProgramare());
+        dto.setAppointmentDate(appointment.getAppointmentDate());
         dto.setStatus(appointment.getStatus());
-        dto.setSumar(appointment.getSumar());
+        dto.setSummary(appointment.getSummary());
+        dto.setLink(appointment.getLink());
         return dto;
     }
 
@@ -55,13 +65,38 @@ public class AppointmentService {
 
 
             Appointments appointment = new Appointments();
-            appointment.setDataProgramare(appointmentDTO.getDataProgramare());
+            appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
             appointment.setStatus(appointmentDTO.getStatus());
             user.ifPresent(appointment::setUser);
             doctor.ifPresent(appointment::setDoctor);
+            doctor.ifPresent(d -> appointment.setLink(doctorLinkMapper.getLinkForDoctor(d.getId())));
+
             return appointmentRepository.save(appointment);
 
 
+    }
+
+    public List<String> getAvailableAppointmentTimes(Long doctorId, LocalDateTime startOfDay, LocalDateTime endOfDay) {
+        List<Appointments> existingAppointments = appointmentRepository.findByDoctorIdAndAppointmentDateBetween(doctorId, startOfDay, endOfDay);
+        List<String> availableSlots = new ArrayList<>();
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime startTime = LocalTime.of(8, 0);
+        LocalTime endTime = LocalTime.of(17, 0);
+
+        while (startTime.isBefore(endTime)) {
+            final LocalTime slotStart = startTime;
+            boolean isBooked = existingAppointments.stream()
+                    .anyMatch(appointment -> appointment.getAppointmentDate().toLocalTime().equals(slotStart));
+
+            if (!isBooked) {
+                availableSlots.add(slotStart.format(timeFormatter));
+            }
+
+            startTime = startTime.plusHours(1);
+        }
+
+        return availableSlots;
     }
 }
 

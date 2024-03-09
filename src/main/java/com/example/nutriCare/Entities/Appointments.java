@@ -22,10 +22,12 @@ public class Appointments {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private LocalDateTime dataProgramare;
+    private LocalDateTime appointmentDate;
 
     private String status;
 
-    private String sumar;
+    private String summary;
+
+    private String link;
 
 }

@@ -9,9 +9,10 @@ public class AppointmentsDTO {
 
     private Long doctorId;
     private Long userId;
-    private LocalDateTime dataProgramare;
+    private LocalDateTime appointmentDate;
     private String status;
-    private String sumar;
+    private String summary;
     private String doctorNume;
     private String userNume;
+    private String link;
 }

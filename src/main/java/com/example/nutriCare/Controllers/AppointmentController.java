@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -35,6 +38,15 @@ public class AppointmentController {
     public ResponseEntity<Appointments> createAppointment(@RequestBody AppointmentsDTO appointmentDTO) {
         Appointments newAppointment = appointmentService.createAppointment(appointmentDTO);
         return ResponseEntity.ok(newAppointment);
+    }
+
+    @GetMapping("/available-times")
+    public List<String> getAvailableAppointmentTimes(@RequestParam Long doctorId,
+                                                     @RequestParam String date) {
+        LocalDate localDate = LocalDate.parse(date);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        LocalDateTime endOfDay = localDate.atTime(LocalTime.MAX);
+        return appointmentService.getAvailableAppointmentTimes(doctorId, startOfDay, endOfDay);
     }
 
 
