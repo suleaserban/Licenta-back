@@ -12,4 +12,5 @@ public class ProductDTO {
     private String mod_administrare;
     private String contra_indicatii;
     private String producator;
+    private Integer pret;
 }

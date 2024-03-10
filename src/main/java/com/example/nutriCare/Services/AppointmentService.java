@@ -57,12 +57,11 @@ public class AppointmentService {
         return appointmentRepository.findByDoctorId(doctorId);
     }
 
-    public Appointments createAppointment(AppointmentsDTO appointmentDTO) {
+    public AppointmentsDTO createAppointment(AppointmentsDTO appointmentDTO) {
 
 
         Optional<User> user = userRepository.findById(appointmentDTO.getUserId());
         Optional<User> doctor = userRepository.findById(appointmentDTO.getDoctorId());
-
 
             Appointments appointment = new Appointments();
             appointment.setAppointmentDate(appointmentDTO.getAppointmentDate());
@@ -70,9 +69,9 @@ public class AppointmentService {
             user.ifPresent(appointment::setUser);
             doctor.ifPresent(appointment::setDoctor);
             doctor.ifPresent(d -> appointment.setLink(doctorLinkMapper.getLinkForDoctor(d.getId())));
+           appointmentRepository.save(appointment);
 
-            return appointmentRepository.save(appointment);
-
+            return appointmentDTO;
 
     }
 

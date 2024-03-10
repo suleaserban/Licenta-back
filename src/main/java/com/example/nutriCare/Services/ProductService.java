@@ -79,6 +79,7 @@ public class ProductService {
         dto.setMod_administrare(product.getMod_administrare());
         dto.setContra_indicatii(product.getContra_indicatii());
         dto.setProducator(product.getProducator());
+        dto.setPret(product.getPret());
 
 
         return dto;

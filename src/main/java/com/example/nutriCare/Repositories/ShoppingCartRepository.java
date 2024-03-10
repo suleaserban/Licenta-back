@@ -19,4 +19,6 @@ public interface ShoppingCartRepository extends JpaRepository<ShoppingCart, Long
             "ORDER BY p.id ASC")
     Optional<ShoppingCart> findShoppingCartWithItemsSortedByProductId(@Param("userId") Long userId);
 
+    Optional<ShoppingCart> findShoppingCartByUserId(@Param("userId") Long userId);
+
 }

@@ -14,8 +14,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,7 +35,6 @@ public class ShoppingCartService {
     @Autowired
     private CartItemRepository cartItemRepository;
 
-    @Transactional
     public void addProductToCart(Long userId, Long productId, int quantity) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
@@ -41,20 +42,30 @@ public class ShoppingCartService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
-                .orElse(new ShoppingCart());
+        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartByUserId(userId)
+                .orElseGet(() -> {
+                    ShoppingCart newShoppingCart = new ShoppingCart();
+                    newShoppingCart.setUser(user);
+                    return newShoppingCart;
+                });
 
-        if (shoppingCart.getId() == null) {
-            shoppingCart.setUser(user);
+
+        CartItem existingCartItem = shoppingCart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElse(null);
+
+        if (existingCartItem != null) {
+
+            existingCartItem.setQuantity(existingCartItem.getQuantity() + quantity);
+        } else {
+
+            CartItem cartItem = new CartItem();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(quantity);
+            cartItem.setShoppingCart(shoppingCart);
+            shoppingCart.getCartItems().add(cartItem);
         }
-
-
-        CartItem cartItem = new CartItem();
-        cartItem.setProduct(product);
-        cartItem.setQuantity(quantity);
-        cartItem.setShoppingCart(shoppingCart);
-
-        shoppingCart.getCartItems().add(cartItem);
 
         shoppingCartRepository.save(shoppingCart);
     }
@@ -63,9 +74,18 @@ public class ShoppingCartService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
+        Optional<ShoppingCart> optionalShoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId);
 
+        if (!optionalShoppingCart.isPresent()) {
+
+            ShoppingCartDTO emptyCart = new ShoppingCartDTO();
+            emptyCart.setUserId(userId);
+            emptyCart.setItems(Collections.emptyList());
+            emptyCart.setTotal(0D);
+            return emptyCart;
+        }
+
+        ShoppingCart shoppingCart = optionalShoppingCart.get();
         return mapToDto(shoppingCart);
     }
 
@@ -88,15 +108,18 @@ public class ShoppingCartService {
     @Transactional
     public void removeProductFromCart(Long userId, Long productId) {
         ShoppingCart shoppingCart = shoppingCartRepository.findShoppingCartWithItemsSortedByProductId(userId)
-                .orElseThrow(() -> new RuntimeException("Shopping cart not found"));
+                .orElse(new ShoppingCart());
 
         CartItem cartItem = shoppingCart.getCartItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Product not found in cart"));
 
+
         shoppingCart.getCartItems().remove(cartItem);
         shoppingCartRepository.save(shoppingCart);
+
+
     }
 
     @Transactional
