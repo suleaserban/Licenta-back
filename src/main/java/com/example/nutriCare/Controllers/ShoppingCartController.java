@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
@@ -15,9 +18,11 @@ public class ShoppingCartController {
     ShoppingCartService shoppingCartService;
 
     @PostMapping("/add")
-    public String addProductToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
+    public ResponseEntity<Map<String, String>> addProductToCart(@RequestParam Long userId, @RequestParam Long productId, @RequestParam int quantity) {
         shoppingCartService.addProductToCart(userId, productId, quantity);
-        return "Product added to cart successfully";
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Product added to cart successfully");
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/get")
