@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -29,10 +30,16 @@ public class AppointmentController {
 
 
     @GetMapping("/doctor/{doctorId}")
-    public List<Appointments> getDoctorAppointments(@PathVariable Long doctorId) {
+    public List<AppointmentsDTO> getDoctorAppointments(@PathVariable Long doctorId) {
         return appointmentService.getAppointmentsByDoctor(doctorId);
     }
 
+    @PutMapping("/{appointmentId}/status")
+    public ResponseEntity<AppointmentsDTO> updateAppointmentStatus(@PathVariable Long appointmentId, @RequestBody Map<String, String> statusBody) {
+        String status = statusBody.get("status");
+        AppointmentsDTO updatedAppointmentDTO = appointmentService.updateStatus(appointmentId, status);
+        return ResponseEntity.ok(updatedAppointmentDTO);
+    }
 
     @PostMapping("/add-appointment")
     public ResponseEntity<AppointmentsDTO> createAppointment(@RequestBody AppointmentsDTO appointmentDTO) {

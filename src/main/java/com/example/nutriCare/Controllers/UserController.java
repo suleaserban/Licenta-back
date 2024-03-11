@@ -4,6 +4,7 @@ import com.example.nutriCare.Dtos.DoctorDetailsDTO;
 import com.example.nutriCare.Dtos.PonderiDTO;
 import com.example.nutriCare.Dtos.ScoreCalculationRequest;
 import com.example.nutriCare.Dtos.UserDTO;
+import com.example.nutriCare.Entities.Role;
 import com.example.nutriCare.Entities.User;
 import com.example.nutriCare.Services.ProductFactorService;
 import com.example.nutriCare.Services.ScoringService;
@@ -57,6 +58,11 @@ public class UserController {
     @GetMapping("/get-all-doctors")
     public List<DoctorDetailsDTO> getAllDoctors() {
         return userService.findAllDoctors();
+    }
+    @GetMapping("/get-role-by-id/{id}")
+    public ResponseEntity<Role> getUserRoleById(@PathVariable Long id) {
+        Role userRole = userService.getUserRoleById(id);
+        return new ResponseEntity<>(userRole, HttpStatus.OK);
     }
 
 }

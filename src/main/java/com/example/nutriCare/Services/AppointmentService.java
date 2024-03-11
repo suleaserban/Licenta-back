@@ -42,8 +42,9 @@ public class AppointmentService {
     private AppointmentsDTO convertToDTO(Appointments appointment) {
 
         AppointmentsDTO dto = new AppointmentsDTO();
+        dto.setId(appointment.getId());
         dto.setUserId(appointment.getUser().getId());
-        dto.setUserNume(appointment.getUser().getNume());
+        dto.setUserNume(appointment.getUser().getNume() + " " + appointment.getUser().getPrenume());
         dto.setDoctorId(appointment.getDoctor().getId());
         dto.setDoctorNume(appointment.getDoctor().getNume());
         dto.setAppointmentDate(appointment.getAppointmentDate());
@@ -53,8 +54,9 @@ public class AppointmentService {
         return dto;
     }
 
-    public List<Appointments> getAppointmentsByDoctor(Long doctorId) {
-        return appointmentRepository.findByDoctorId(doctorId);
+    public List<AppointmentsDTO> getAppointmentsByDoctor(Long doctorId) {
+        List<Appointments> appointments = appointmentRepository.findByDoctorId(doctorId);
+        return appointments.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public AppointmentsDTO createAppointment(AppointmentsDTO appointmentDTO) {
@@ -73,6 +75,14 @@ public class AppointmentService {
 
             return appointmentDTO;
 
+    }
+
+    public AppointmentsDTO updateStatus(Long appointmentId, String status) {
+        Appointments appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with id " + appointmentId));
+        appointment.setStatus(status);
+        Appointments savedAppointment = appointmentRepository.save(appointment);
+        return convertToDTO(savedAppointment);
     }
 
     public List<String> getAvailableAppointmentTimes(Long doctorId, LocalDateTime startOfDay, LocalDateTime endOfDay) {

@@ -31,6 +31,11 @@ public class UserService {
         return user.getId();
     }
 
+    public Role getUserRoleById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getRol();
+    }
 
     public List<DoctorDetailsDTO> findAllDoctors() {
         List<User> allDoctors = userRepository.findByRol(Role.DOCTOR);
