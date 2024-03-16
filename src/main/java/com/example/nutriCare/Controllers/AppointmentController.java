@@ -56,5 +56,11 @@ public class AppointmentController {
         return appointmentService.getAvailableAppointmentTimes(doctorId, startOfDay, endOfDay);
     }
 
+    @PutMapping("/{appointmentId}/update-summary")
+    public ResponseEntity<AppointmentsDTO> updateAppointmentSummary(@PathVariable Long appointmentId, @RequestBody Map<String, String> summaryBody) {
+        String summary = summaryBody.get("summary");
+        AppointmentsDTO updatedAppointmentDTO = appointmentService.updateSummary(appointmentId,summary);
+        return ResponseEntity.ok(updatedAppointmentDTO);
+    }
 
 }

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +37,10 @@ public class AppointmentService {
 
     public List<AppointmentsDTO> getAppointmentsByUser(Long userId) {
         List<Appointments> appointments = appointmentRepository.findByUserId(userId);
-        return appointments.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<Appointments> sortedAppointments = appointments.stream()
+                .sorted(Comparator.comparing(Appointments::getId))
+                .toList();
+        return sortedAppointments.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private AppointmentsDTO convertToDTO(Appointments appointment) {
@@ -56,7 +60,10 @@ public class AppointmentService {
 
     public List<AppointmentsDTO> getAppointmentsByDoctor(Long doctorId) {
         List<Appointments> appointments = appointmentRepository.findByDoctorId(doctorId);
-        return appointments.stream().map(this::convertToDTO).collect(Collectors.toList());
+        List<Appointments> sortedAppointments = appointments.stream()
+                .sorted(Comparator.comparing(Appointments::getId))
+                .toList();
+        return sortedAppointments.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     public AppointmentsDTO createAppointment(AppointmentsDTO appointmentDTO) {
@@ -81,6 +88,14 @@ public class AppointmentService {
         Appointments appointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new RuntimeException("Appointment not found with id " + appointmentId));
         appointment.setStatus(status);
+        Appointments savedAppointment = appointmentRepository.save(appointment);
+        return convertToDTO(savedAppointment);
+    }
+
+    public AppointmentsDTO updateSummary(Long appointmentId, String summary) {
+        Appointments appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found with id " + appointmentId));
+        appointment.setSummary(summary);
         Appointments savedAppointment = appointmentRepository.save(appointment);
         return convertToDTO(savedAppointment);
     }

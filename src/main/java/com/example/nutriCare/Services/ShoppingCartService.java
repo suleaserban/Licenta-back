@@ -2,22 +2,13 @@ package com.example.nutriCare.Services;
 
 import com.example.nutriCare.Dtos.CartItemDTO;
 import com.example.nutriCare.Dtos.ShoppingCartDTO;
-import com.example.nutriCare.Entities.CartItem;
-import com.example.nutriCare.Entities.Product;
-import com.example.nutriCare.Entities.ShoppingCart;
-import com.example.nutriCare.Entities.User;
-import com.example.nutriCare.Repositories.CartItemRepository;
-import com.example.nutriCare.Repositories.ProductRepository;
-import com.example.nutriCare.Repositories.ShoppingCartRepository;
-import com.example.nutriCare.Repositories.UserRepository;
+import com.example.nutriCare.Entities.*;
+import com.example.nutriCare.Repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +25,12 @@ public class ShoppingCartService {
 
     @Autowired
     private CartItemRepository cartItemRepository;
+
+    @Autowired
+    private OrdersRepository ordersRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     public void addProductToCart(Long userId, Long productId, int quantity) {
         Product product = productRepository.findById(productId)
@@ -153,5 +150,7 @@ public class ShoppingCartService {
 
         return dto;
     }
+
+
 
 }
