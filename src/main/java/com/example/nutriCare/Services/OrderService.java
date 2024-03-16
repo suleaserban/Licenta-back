@@ -2,6 +2,7 @@ package com.example.nutriCare.Services;
 
 import com.example.nutriCare.Dtos.OrderDTO;
 import com.example.nutriCare.Dtos.OrderDetailsDTO;
+import com.example.nutriCare.Dtos.OrderDisplayDTO;
 import com.example.nutriCare.Dtos.OrderItemDTO;
 import com.example.nutriCare.Entities.*;
 import com.example.nutriCare.Repositories.OrderItemRepository;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -88,6 +91,59 @@ public class OrderService {
         }).collect(Collectors.toList());
         orderDTO.setOrderItems(itemDTOs);
         return orderDTO;
+    }
+
+    public List<OrderDisplayDTO> getOrdersByUserId(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+
+        List<Order> sortedOrders = orders.stream()
+                .sorted(Comparator.comparing(Order::getOrderDate))
+                .collect(Collectors.toList());
+
+
+        return sortedOrders.stream()
+                .map(this::convertToOrderDisplayDTO)
+                .collect(Collectors.toList());
+
+    }
+
+    public List<OrderDisplayDTO> getAllOrders(){
+    List<Order> orders = orderRepository.findAll();
+        List<Order> sortedOrders = orders.stream()
+                .sorted(Comparator.comparing(Order::getOrderDate))
+                .collect(Collectors.toList());
+
+
+        return sortedOrders.stream()
+                .map(this::convertToOrderDisplayDTO)
+                .collect(Collectors.toList());
+        }
+
+    private OrderDisplayDTO convertToOrderDisplayDTO(Order order) {
+        OrderDisplayDTO dto = new OrderDisplayDTO();
+        dto.setDate(java.util.Date.from(order.getOrderDate().atZone(ZoneId.systemDefault()).toInstant()));
+        dto.setStatus(order.getStatus().toString());
+        dto.setTotal(order.getTotal());
+
+        String productNames = order.getOrderItems().stream()
+                .map(orderItem -> orderItem.getProduct().getNume() + " x " + orderItem.getQuantity())
+                .collect(Collectors.joining(", "));
+        dto.setProductNames(productNames);
+        dto.setAdress(order.getAddress());
+        dto.setId(order.getId());
+
+
+        return dto;
+    }
+
+
+    public OrderDTO updateOrderStatus(Long orderId, OrderStatus status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(status);
+        Order savedOrder = orderRepository.save(order);
+        return convertToOrderDTO(savedOrder);
     }
 
 }
