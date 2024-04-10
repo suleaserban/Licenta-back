@@ -8,6 +8,7 @@ import com.example.nutriCare.Entities.OrderStatus;
 import com.example.nutriCare.Services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class OrderController {
         }
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/get-all-orders")
     public ResponseEntity<List<OrderDisplayDTO>> getAllOrders() {
         try {

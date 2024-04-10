@@ -21,12 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 public class AppointmentService {
-
     private final AppointmentRepository appointmentRepository;
 
     private final UserRepository userRepository;
 
-    private DoctorLinkMapper doctorLinkMapper;
+    private final DoctorLinkMapper doctorLinkMapper;
 
     @Autowired
     public AppointmentService(AppointmentRepository appointmentRepository, UserRepository userRepository,DoctorLinkMapper doctorLinkMapper) {
