@@ -12,7 +12,8 @@ public class DoctorLinkMapper {
     public DoctorLinkMapper() {
         linkForDoctors = new HashMap<>();
         linkForDoctors.put(4L, "https://us04web.zoom.us/j/3654549949?pwd=dGMxM3pybkdnZ0M5T0E4MWpnOTdiZz09");
-
+        linkForDoctors.put(9L, "https://us04web.zoom.us/j/3654549949?pwd=dGMxM3pybkdnZ0M5T0E4MWpnOTdiZz09");
+        linkForDoctors.put(10L, "https://us04web.zoom.us/j/3654549949?pwd=dGMxM3pybkdnZ0M5T0E4MWpnOTdiZz09");
     }
 
     public String getLinkForDoctor(Long doctorId) {
