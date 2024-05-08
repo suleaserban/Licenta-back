@@ -2,6 +2,7 @@ package com.example.nutriCare.Services;
 
 import com.example.nutriCare.Dtos.PonderiDTO;
 import com.example.nutriCare.Entities.Product;
+import com.example.nutriCare.Entities.ProductFactor;
 import com.example.nutriCare.Entities.User;
 import com.example.nutriCare.Entities.UserScore;
 import com.example.nutriCare.Repositories.ProductRepository;
@@ -34,41 +35,44 @@ class ScoringServiceTest {
     @InjectMocks
     private ScoringService scoringService;
 
-
-
     @Test
-    void shouldSwapScoresIfVegan() {
+    void shouldCalculateScore() {
 
         User user = new User();
         user.setId(1L);
 
-        Product nonVeganProduct = new Product();
-        nonVeganProduct.setId(10L);
-        nonVeganProduct.setProductFactors(new HashSet<>());
+        Product melatonina = new Product();
+        melatonina.setId(1L);
+        Set<ProductFactor> factor_somn = new HashSet<>();
+        factor_somn.add(new ProductFactor("factor_somn",2D));
+        melatonina.setProductFactors(factor_somn);
 
-        Product veganProduct = new Product();
+        Product vitamina_d = new Product();
 
-        veganProduct.setId(21L);
-        veganProduct.setProductFactors(new HashSet<>());
+        vitamina_d.setId(2L);
+        Set<ProductFactor> factor_soare = new HashSet<>();
+        factor_soare.add(new ProductFactor("factor_soare",2D));
+
+        vitamina_d.setProductFactors(factor_soare);
 
         HashMap<String, Double> ponderi = new HashMap<>();
-        ponderi.put("factor_somnn", 1.5);
-        ponderi.put("factor_soare", 1.0);
+        ponderi.put("factor_somn", 1.0);
+        ponderi.put("factor_soare", 0.5);
         PonderiDTO ponderiDto = new PonderiDTO();
-
         ponderiDto.setPonderi(ponderi);
 
-        UserScore normalUserScore = new UserScore(user, nonVeganProduct, 2.0);
-        UserScore veganUserScore = new UserScore(user, veganProduct, 0.0);
+        UserScore expectedMelatoninaUserScore = new UserScore(user,melatonina,0.0);
+        UserScore expectedVitaminaDUserScore = new UserScore(user,vitamina_d,0.0);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(productRepository.findAll()).thenReturn(Arrays.asList(nonVeganProduct, veganProduct));
-        when(userScoreRepository.findByUserIdAndProductId(1L, 10L)).thenReturn(Optional.of(normalUserScore));
-        when(userScoreRepository.findByUserIdAndProductId(1L, 21L)).thenReturn(Optional.of(veganUserScore));
+        when(productRepository.findAll()).thenReturn(Arrays.asList(melatonina, vitamina_d));
+        when(userScoreRepository.findByUserIdAndProductId(1L, 1L)).thenReturn(Optional.of(expectedMelatoninaUserScore));
+        when(userScoreRepository.findByUserIdAndProductId(1L, 2L)).thenReturn(Optional.of(expectedVitaminaDUserScore));
 
-        scoringService.calculateScoresForUser(1L, ponderiDto, true);
+        scoringService.calculateScoresForUser(1L, ponderiDto, false);
 
-        verify(userScoreRepository, times(4)).save(any(UserScore.class));
+        assertEquals(2D, expectedMelatoninaUserScore.getValoare());
+        assertEquals(1D, expectedVitaminaDUserScore.getValoare());
     }
 
 
