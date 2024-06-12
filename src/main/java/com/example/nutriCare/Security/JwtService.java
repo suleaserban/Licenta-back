@@ -22,7 +22,7 @@ public class JwtService {
 
     @Autowired
     UserService userService;
-    private static final String SECRET_KEY = "RULh5fYZGB6QinnJSXTN1GQ0tfridBwyZI59L+oSlWKN/MPeh9ejb1sD3WbjT3GR";
+    private static final String SECRET_KEY = System.getenv("SECRET_KEY");
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
