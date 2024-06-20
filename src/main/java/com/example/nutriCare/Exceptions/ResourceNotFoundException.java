@@ -9,6 +9,4 @@ public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String message) {
         super(message);
     }
-
-    // Poți adăuga și alte constructori sau metode dacă e necesar
 }
